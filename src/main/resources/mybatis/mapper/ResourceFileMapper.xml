@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lvr.springbootmanger.dao.ResourceFileMapper">
+  <resultMap id="BaseResultMap" type="com.lvr.springbootmanger.bean.ResourceFile">
+    <id column="resource_id" jdbcType="INTEGER" property="resourceId" />
+    <result column="resource_name" jdbcType="VARCHAR" property="resourceName" />
+    <result column="resource_path" jdbcType="VARCHAR" property="resourcePath" />
+    <result column="onload_user" jdbcType="VARCHAR" property="onloadUser" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="resource_status" jdbcType="INTEGER" property="resourceStatus" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    resource_id, resource_name, resource_path, onload_user, create_time, resource_status
+  </sql>
+    <select id="queryResourceFileList" resultMap="BaseResultMap" >
+      select
+      <include refid="Base_Column_List" />
+       from t_resource
+
+    </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_resource
+    where resource_id = #{resourceId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_resource
+    where resource_id = #{resourceId,jdbcType=INTEGER}
+  </delete>
+ <update id="delResourceFile" >
+   update t_resource set resource_status=-1 where resource_id=#{id}
+
+ </update>
+  <insert id="insert" parameterType="com.lvr.springbootmanger.bean.ResourceFile">
+    insert into t_resource (resource_id, resource_name, resource_path, 
+      onload_user, create_time, resource_status
+      )
+    values (#{resourceId,jdbcType=INTEGER}, #{resourceName,jdbcType=VARCHAR}, #{resourcePath,jdbcType=VARCHAR}, 
+      #{onloadUser,jdbcType=INTEGER}, now(), 1
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.lvr.springbootmanger.bean.ResourceFile">
+    insert into t_resource
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="resourceId != null">
+        resource_id,
+      </if>
+      <if test="resourceName != null">
+        resource_name,
+      </if>
+      <if test="resourcePath != null">
+        resource_path,
+      </if>
+      <if test="onloadUser != null">
+        onload_user,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="resourceStatus != null">
+        resource_status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="resourceId != null">
+        #{resourceId,jdbcType=INTEGER},
+      </if>
+      <if test="resourceName != null">
+        #{resourceName,jdbcType=VARCHAR},
+      </if>
+      <if test="resourcePath != null">
+        #{resourcePath,jdbcType=VARCHAR},
+      </if>
+      <if test="onloadUser != null">
+        #{onloadUser,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="resourceStatus != null">
+        #{resourceStatus,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.lvr.springbootmanger.bean.ResourceFile">
+    update t_resource
+    <set>
+      <if test="resourceName != null">
+        resource_name = #{resourceName,jdbcType=VARCHAR},
+      </if>
+      <if test="resourcePath != null">
+        resource_path = #{resourcePath,jdbcType=VARCHAR},
+      </if>
+      <if test="onloadUser != null">
+        onload_user = #{onloadUser,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="resourceStatus != null">
+        resource_status = #{resourceStatus,jdbcType=INTEGER},
+      </if>
+    </set>
+    where resource_id = #{resourceId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.lvr.springbootmanger.bean.ResourceFile">
+    update t_resource
+    set resource_name = #{resourceName,jdbcType=VARCHAR},
+      resource_path = #{resourcePath,jdbcType=VARCHAR},
+      onload_user = #{onloadUser,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      resource_status = #{resourceStatus,jdbcType=INTEGER}
+    where resource_id = #{resourceId,jdbcType=INTEGER}
+  </update>
+</mapper>

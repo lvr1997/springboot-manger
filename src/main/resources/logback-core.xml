@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+    <!-- 文件输出格式 -->
+    <property name="PATTERN" value="%-12(%d{yyyy-MM-dd HH:mm:ss.SSS}) |-%-5level {%thread} %c {%L} -| %msg%n"/>
+    <!-- test文件路径 -->
+    <!--<property name="TEST_FILE_PATH" value="d:/opt/core/logs"/>-->
+    <!-- pro文件路径 -->
+    <!--<property name="PRO_FILE_PATH" value="/opt/core/logs"/>-->
+    <!-- 开发环境 -->
+    <springProfile name="dev">
+        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <pattern>${PATTERN}</pattern>
+            </encoder>
+        </appender>
+        <logger name="com.lvr.springbootmanger" level="debug"/>
+        <logger name="org.springframework.jdbc.core.JdbcTemplate" level="debug"/>
+        <root level="info">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
+
+    <!-- 测试环境 -->
+    <!--<springProfile name="test">
+        &lt;!&ndash; 每天产生一个文件 &ndash;&gt;
+        <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender"/>
+        &lt;!&ndash; 文件路径 &ndash;&gt;
+        <file>${TEST_FILE_PATH}</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            &lt;!&ndash; 文件名称 &ndash;&gt;
+            <fileNamePattern>${TEST_FILE_PATH}/info.%d(yyyy-MM-dd).log</fileNamePattern>
+            &lt;!&ndash; 文件最大保存历史数量 &ndash;&gt;
+            <MaxHistory>100</MaxHistory>
+        </rollingPolicy>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>${PATTERN}</pattern>
+        </layout>
+        <root level="info">
+            <appender-ref ref="TEST-FILE"/>
+        </root>
+    </springProfile>-->
+
+    <!-- 生产环境 -->
+    <!--<springProfile name="pro">
+        <appender name="PROD_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>${PRO_FILE_PATH}</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <fileNamePattern>${PRO_FILE_PATH}/warn,%d{yyyy-MM-dd}.log</fileNamePattern>
+            </rollingPolicy>
+            <layout class="ch.qos.logback.classic.PatternLayout">
+                <pattern>${PATTERN}</pattern>
+            </layout>
+        </appender>
+        <root level="warn">
+            <appender-ref ref="PROD_FILE"/>
+        </root>
+    </springProfile>-->
+</configuration>

@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lvr.springbootmanger.dao.UserMapper">
+  <resultMap id="BaseResultMap" type="com.lvr.springbootmanger.bean.User">
+    <id column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="user_email" jdbcType="VARCHAR" property="userEmail" />
+    <result column="user_phone" jdbcType="VARCHAR" property="userPhone" />
+    <result column="user_account" jdbcType="VARCHAR" property="userAccount" />
+    <result column="user_password" jdbcType="VARCHAR" property="userPassword" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="user_status" jdbcType="VARCHAR" property="userStatus" />
+    <result column="user_role" jdbcType="INTEGER" property="userRole" />
+    <association property="roles" javaType="com.lvr.springbootmanger.bean.Role">
+      <id column="role_id" property="roleId" jdbcType="INTEGER"/>
+      <result column="role_name" property="roleName" jdbcType="VARCHAR"/>
+    </association>
+  </resultMap>
+  <sql id="Base_Column_List">
+    user_id, user_name, user_email, user_phone, user_account, user_password, create_time, 
+    user_status, user_role, role_id, role_name
+  </sql>
+  
+  <select id="queryUserByUserAccountandPassword"  resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_user Inner join  t_role on  t_user.user_role=t_role.role_id
+     where t_user.user_account=#{userAccount} and t_user.user_password=#{userPassword} and user_status='1'
+
+  </select>
+  <select id="selectUserList"  resultMap="BaseResultMap" parameterType="User">
+    select
+    <include refid="Base_Column_List" />
+    from t_user inner join t_role on t_user.user_role=t_role.role_id
+    <where>
+      <if test="userName!=null and userName!=''">
+        user_name like concat("%",#{userName},"%")
+      </if>
+      <if test="userPhone !=null and userPhone !=''  ">
+        user_phone like concat("%",#{userPhone},"%")
+      </if>
+      <if test="userStatus !=null and userStatus !=''">
+        user_status = #{userStatus}
+      </if>
+      <if test="userRole !=null and userRole !=0">
+        user_role=#{userRole}
+      </if>
+    </where>
+  </select>
+
+  <select id="countUsers" resultType="java.lang.Long" >
+    select count(user_id)
+    from t_user
+    <where>
+      <if test="userName!=null and userName!=''">
+        user_name like concat("%",#{userName},"%")
+      </if>
+      <if test="userPhone !=null and userPhone !=''  ">
+        user_phone like concat("%",#{userPhone},"%")
+      </if>
+      <if test="userStatus !=null and userStatus !=''">
+        user_status = #{userStatus}
+      </if>
+      <if test="userRole !=null and userRole !=0">
+        user_role=#{userRole}
+      </if>
+    </where>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_user inner join t_role on t_user.user_role=t_role.role_id
+    where user_id = #{userId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_user
+    where user_id = #{userId,jdbcType=INTEGER} ,
+  </delete>
+  <update id="deleteUser" >
+     update  t_user set  user_status=-1 where user_id=#{userId}
+
+  </update>
+  <insert id="insert" parameterType="com.lvr.springbootmanger.bean.User">
+    insert into t_user (user_id, user_name, user_email, 
+      user_phone, user_account, user_password, 
+      create_time, user_status, user_role
+      )
+    values (#{userId,jdbcType=INTEGER}, #{userName,jdbcType=VARCHAR}, #{userEmail,jdbcType=VARCHAR}, 
+      #{userPhone,jdbcType=VARCHAR}, #{userAccount,jdbcType=VARCHAR}, #{userPassword,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{userStatus,jdbcType=VARCHAR}, #{userRole,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.lvr.springbootmanger.bean.User">
+    insert into t_user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="userName != null">
+        user_name,
+      </if>
+      <if test="userEmail != null">
+        user_email,
+      </if>
+      <if test="userPhone != null">
+        user_phone,
+      </if>
+      <if test="userAccount != null">
+        user_account,
+      </if>
+      <if test="userPassword != null">
+        user_password,
+      </if>
+
+        create_time,
+
+      <if test="userStatus != null">
+        user_status,
+      </if>
+      <if test="userRole != null">
+        user_role,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="userName != null">
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="userEmail != null">
+        #{userEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="userPhone != null">
+        #{userPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="userAccount != null">
+        #{userAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="userPassword != null">
+        #{userPassword,jdbcType=VARCHAR},
+      </if>
+
+       now(),
+
+      <if test="userStatus != null">
+        #{userStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="userRole != null">
+        #{userRole,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.lvr.springbootmanger.bean.User">
+    update t_user
+    <set>
+      <if test="userName != null">
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="userEmail != null">
+        user_email = #{userEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="userPhone != null">
+        user_phone = #{userPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="userAccount != null">
+        user_account = #{userAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="userPassword != null">
+        user_password = #{userPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userStatus != null">
+        user_status = #{userStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="userRole != null">
+        user_role = #{userRole,jdbcType=INTEGER},
+      </if>
+    </set>
+    where user_id = #{userId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.lvr.springbootmanger.bean.User">
+    update t_user
+    set user_name = #{userName,jdbcType=VARCHAR},
+      user_email = #{userEmail,jdbcType=VARCHAR},
+      user_phone = #{userPhone,jdbcType=VARCHAR},
+      user_account = #{userAccount,jdbcType=VARCHAR},
+      user_password = #{userPassword,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      user_status = #{userStatus,jdbcType=VARCHAR},
+      user_role = #{userRole,jdbcType=INTEGER}
+    where user_id = #{userId,jdbcType=INTEGER}
+  </update>
+</mapper>
